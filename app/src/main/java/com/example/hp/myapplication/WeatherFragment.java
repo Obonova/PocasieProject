@@ -7,6 +7,7 @@ import java.util.Locale;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,10 +26,13 @@ public class WeatherFragment extends Fragment {
     TextView cityField;
     TextView updatedField;
     TextView detailsField;
+    Button detailsButton;
     TextView currentTemperatureField;
     TextView weatherIcon;
 
     Handler handler;
+
+    String detailsString = "";
 
     public WeatherFragment(){
         handler = new Handler();
@@ -40,10 +45,21 @@ public class WeatherFragment extends Fragment {
         cityField = (TextView)rootView.findViewById(R.id.city_field);
         updatedField = (TextView)rootView.findViewById(R.id.updated_field);
         detailsField = (TextView)rootView.findViewById(R.id.details_field);
+        detailsButton = (Button)rootView.findViewById(R.id.butt_details);
         currentTemperatureField = (TextView)rootView.findViewById(R.id.current_temperature_field);
         weatherIcon = (TextView)rootView.findViewById(R.id.weather_icon);
 
         weatherIcon.setTypeface(weatherFont);
+
+        detailsButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Open second activity and put details data
+                Intent myIntent = new Intent(v.getContext(),Activity2.class);
+                myIntent.putExtra("DATA_DETAILS", detailsString);
+                startActivity(myIntent);
+            }
+        });
+
         return rootView;
     }
 
@@ -85,10 +101,10 @@ public class WeatherFragment extends Fragment {
 
             JSONObject details = json.getJSONArray("weather").getJSONObject(0);
             JSONObject main = json.getJSONObject("main");
-            detailsField.setText(
-                    details.getString("description").toUpperCase(Locale.US) +
-                            "\n" + "Humidity: " + main.getString("humidity") + "%" +
-                            "\n" + "Pressure: " + main.getString("pressure") + " hPa");
+            detailsField.setText(details.getString("description").toUpperCase(Locale.US));
+
+            detailsString = "Humidity: " + main.getString("humidity") + "%" +
+                    "\n" + "Pressure: " + main.getString("pressure") + " hPa";
 
             currentTemperatureField.setText(
                     String.format("%.2f", main.getDouble("temp"))+ " ℃");

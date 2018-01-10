@@ -61,10 +61,5 @@ public class MainActivity extends AppCompatActivity {
         wf.changeCity(city);
         new CityPreference(this).setCity(city);
     }
-    public void newActivity(View view)
-    {
-        Intent intent = new Intent(MainActivity.this, Activity2.class);
-        startActivity(intent);
-    }
 
 }
